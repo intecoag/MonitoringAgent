@@ -25,7 +25,7 @@ source .env
 set +a
 
 echo "📦 Pulling latest changes from git..."
-git pull origin $(git rev-parse --abbrev-ref HEAD)
+git pull
 
 echo "🔄 Rebuilding Docker images..."
 docker compose build --pull
