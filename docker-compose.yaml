@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  docker-exporter:
+    image: callmetigro/simple-docker-exporter:latest
+    networks:
+      - monitoring
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # vector is logs collector. It collects logs according to vector.yml
+  # and forwards them to VictoriaLogs
+  vector:
+    image: docker.io/timberio/vector:0.46.X-distroless-libc
+    networks:
+      - monitoring
+    environment:
+      - PROCFS_ROOT=/host/proc
+      - SYSFS_ROOT=/host/sys
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: /var/lib/docker
+        target: /var/lib/docker
+      - ./vector/${VECTOR_CONFIG_FILE}:/etc/vector/vector.yaml:ro
+    user: root
+
+networks:
+  monitoring:
+    name: ${NETWORK_NAME:-web-gateway}
+    driver: bridge
+    external: true
