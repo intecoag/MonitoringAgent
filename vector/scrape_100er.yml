@@ -12,6 +12,9 @@ sources:
     namespace: 'node'
     collectors:
       - filesystem
+    filesystem:
+      mountpoints:
+        - includes: ["/"]
   vector_metrics:
     type: internal_metrics
     scrape_interval_secs: 60
