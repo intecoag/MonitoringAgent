@@ -6,15 +6,10 @@ sources:
     type: internal_logs
   docker:
     type: docker_logs
-  host_metrics:
-    type: host_metrics
-    scrape_interval_secs: 60
-    namespace: 'node'
-    collectors:
-      - filesystem
-    filesystem:
-      mountpoints:
-        includes: ["/"]
+  # host_metrics:
+  #   type: host_metrics
+  #   scrape_interval_secs: 60
+  #   namespace: 'node'
   vector_metrics:
     type: internal_metrics
     scrape_interval_secs: 60
@@ -30,12 +25,12 @@ transforms:
     inputs: [docker, vector_logs]
     source: |
       .message = parse_json(.message) ?? .message
-      .instance = "100er-vm"
+      .instance = "caratello"
   add_labels_metrics:
     type: remap
-    inputs: [vector_metrics, prometheus_scrape, host_metrics]
+    inputs: [vector_metrics, prometheus_scrape]
     source: |
-      .tags.instance = "100er-vm"
+      .tags.instance = "caratello"
 sinks:
   elasticsearch:
     type: elasticsearch
