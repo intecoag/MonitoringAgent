@@ -6,10 +6,12 @@ sources:
     type: internal_logs
   docker:
     type: docker_logs
-  # host_metrics:
-  #   type: host_metrics
-  #   scrape_interval_secs: 60
-  #   namespace: 'node'
+  host_metrics:
+    type: host_metrics
+    scrape_interval_secs: 60
+    namespace: 'node'
+    collectors:
+      - filesystem
   vector_metrics:
     type: internal_metrics
     scrape_interval_secs: 60
@@ -28,7 +30,7 @@ transforms:
       .instance = "100er-vm"
   add_labels_metrics:
     type: remap
-    inputs: [vector_metrics, prometheus_scrape]
+    inputs: [vector_metrics, prometheus_scrape, host_metrics]
     source: |
       .tags.instance = "100er-vm"
 sinks:
