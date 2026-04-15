@@ -1,0 +1,60 @@
+api:
+  enabled: true
+  address: 0.0.0.0:8686
+sources:
+  vector_logs:
+    type: internal_logs
+  docker:
+    type: docker_logs
+  host_metrics:
+    type: host_metrics
+    scrape_interval_secs: 60
+    namespace: 'node'
+    collectors:
+      - filesystem
+      - cpu
+      - memory
+      - load
+      - network
+      - process
+    filesystem:
+      mountpoints:
+        includes: ["/"]
+  vector_metrics:
+    type: internal_metrics
+    scrape_interval_secs: 60
+transforms:
+  msg_parser:
+    type: remap
+    inputs: [docker, vector_logs]
+    source: |
+      .message = parse_json(.message) ?? .message
+      .instance = "100er-vm"
+  add_labels_metrics:
+    type: remap
+    inputs: [vector_metrics, host_metrics]
+    source: |
+      .tags.instance = "100er-vm"
+sinks:
+  elasticsearch:
+    type: elasticsearch
+    inputs: [msg_parser]
+    endpoints: [https://logs.monitoring.inteco.ch/insert/elasticsearch/]
+    mode: bulk
+    api_version: v8
+    compression: gzip
+    healthcheck:
+      enabled: false
+    request:
+      headers:
+        VL-Stream-Fields: source_type,label.com.docker.compose.service
+        VL-Time-Field: timestamp
+        VL-Msg-Field: message,msg,_msg,message.message,message.log
+        AccountID: "0"
+        ProjectID: "0"
+  victoriametrics:
+    type: prometheus_remote_write
+    endpoint: https://metrics.monitoring.inteco.ch/api/v1/write
+    inputs: [add_labels_metrics]
+    healthcheck:
+      enabled: false
