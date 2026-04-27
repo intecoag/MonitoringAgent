@@ -31,6 +31,6 @@ services:
 
 networks:
   monitoring:
-    name: ${NETWORK_NAME:-web-gateway}
+    name: ${NETWORK_NAME:-traefik-frontend}
     driver: bridge
     external: true
