@@ -29,12 +29,12 @@ transforms:
     inputs: [docker, vector_logs]
     source: |
       .message = parse_json(.message) ?? .message
-      .instance = "achillevm-gh-runner"
+      .instance = "achilleheel-gh-runner"
   add_labels_metrics:
     type: remap
     inputs: [vector_metrics, host_metrics]
     source: |
-      .tags.instance = "achillevm-gh-runner"
+      .tags.instance = "achilleheel-gh-runner"
 sinks:
   elasticsearch:
     type: elasticsearch
