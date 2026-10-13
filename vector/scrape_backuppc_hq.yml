@@ -26,10 +26,14 @@ transforms:
     source: |
       .message = parse_json(.message) ?? .message
       .level = get(., ["level"]) ??
+        get(., ["severity_text"]) ??
+        get(., ["severity"]) ??
+        get(., ["log_level"]) ??
         get(., ["message", "level"]) ??
-        get(., ["message", "severity"]) ??
         get(., ["message", "severity_text"]) ??
+        get(., ["message", "severity"]) ??
         get(., ["message", "log_level"]) ??
+        get(., ["message", "log", "level"]) ??
         "unknown"
       .level = downcase(to_string!(.level))
       .instance = "backuppc-hq"
