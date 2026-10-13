@@ -25,6 +25,35 @@ transforms:
     inputs: [docker, vector_logs]
     source: |
       .message = parse_json(.message) ?? .message
+      .level = get(., ["level"]) ?? null
+      if is_null(.level) || .level == "" {
+        .level = get(., ["severity_text"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["severity"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["log_level"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "level"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "severity_text"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "severity"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "log_level"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "log", "level"]) ?? null
+      }
+      if is_null(.level) || .level == "" {
+        .level = "unknown"
+      }
+      .level = downcase(to_string!(.level))
       .instance = "adapp-vm"
   add_labels_metrics:
     type: remap
@@ -43,7 +72,7 @@ sinks:
       enabled: false
     request:
       headers:
-        VL-Stream-Fields: source_type,label.com.docker.compose.service
+        VL-Stream-Fields: source_type,label.com.docker.compose.service,level,instance
         VL-Time-Field: timestamp
         VL-Msg-Field: message,msg,_msg,message.message,message.log
         AccountID: "0"

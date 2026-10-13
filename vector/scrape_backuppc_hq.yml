@@ -25,7 +25,7 @@ transforms:
     inputs: [docker, vector_logs]
     source: |
       .message = parse_json(.message) ?? .message
-      
+
       .level = get(., ["level"]) ?? null
       if is_null(.level) || .level == "" {
         .level = get(., ["severity_text"]) ?? null
@@ -74,7 +74,7 @@ sinks:
       enabled: false
     request:
       headers:
-        VL-Stream-Fields: source_type,label.com.docker.compose.service,level
+        VL-Stream-Fields: source_type,label.com.docker.compose.service,level,instance
         VL-Time-Field: timestamp
         VL-Msg-Field: message,msg,_msg,message.message,message.log
         AccountID: "0"
