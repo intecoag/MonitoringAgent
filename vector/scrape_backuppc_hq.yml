@@ -65,3 +65,9 @@ sinks:
     inputs: [add_labels_metrics]
     healthcheck:
       enabled: false
+  debug_console:
+    type: console
+    inputs: [msg_parser]
+    target: stdout
+    encoding:
+      codec: json
