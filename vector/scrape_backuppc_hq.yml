@@ -56,7 +56,7 @@ sinks:
       enabled: false
     request:
       headers:
-        VL-Stream-Fields: source_type,label.com.docker.compose.service
+        VL-Stream-Fields: source_type,label.com.docker.compose.service,level
         VL-Time-Field: timestamp
         VL-Msg-Field: message,msg,_msg,message.message,message.log
         AccountID: "0"
