@@ -27,31 +27,32 @@ transforms:
       .message = parse_json(.message) ?? .message
       .level = get(., ["level"]) ?? ""
 
-      if .level == "" {
-        .level = get(., ["severity_text"]) ?? ""
+      .level = get(., ["level"])
+      if is_null(.level) || .level == "" {
+        .level = get(., ["severity_text"])
       }
-      if .level == "" {
-        .level = get(., ["severity"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["severity"])
       }
-      if .level == "" {
-        .level = get(., ["log_level"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["log_level"])
       }
-      if .level == "" {
-        .level = get(., ["message", "level"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "level"])
       }
-      if .level == "" {
-        .level = get(., ["message", "severity_text"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "severity_text"])
       }
-      if .level == "" {
-        .level = get(., ["message", "severity"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "severity"])
       }
-      if .level == "" {
-        .level = get(., ["message", "log_level"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "log_level"])
       }
-      if .level == "" {
-        .level = get(., ["message", "log", "level"]) ?? ""
+      if is_null(.level) || .level == "" {
+        .level = get(., ["message", "log", "level"])
       }
-      if .level == "" {
+      if is_null(.level) || .level == "" {
         .level = "unknown"
       }
 
