@@ -25,16 +25,36 @@ transforms:
     inputs: [docker, vector_logs]
     source: |
       .message = parse_json(.message) ?? .message
-      .level = get(., ["level"]) ??
-        get(., ["severity_text"]) ??
-        get(., ["severity"]) ??
-        get(., ["log_level"]) ??
-        get(., ["message", "level"]) ??
-        get(., ["message", "severity_text"]) ??
-        get(., ["message", "severity"]) ??
-        get(., ["message", "log_level"]) ??
-        get(., ["message", "log", "level"]) ??
-        "unknown"
+      .level = get(., ["level"]) ?? ""
+
+      if .level == "" {
+        .level = get(., ["severity_text"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["severity"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["log_level"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["message", "level"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["message", "severity_text"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["message", "severity"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["message", "log_level"]) ?? ""
+      }
+      if .level == "" {
+        .level = get(., ["message", "log", "level"]) ?? ""
+      }
+      if .level == "" {
+        .level = "unknown"
+      }
+
       .level = downcase(to_string!(.level))
       .instance = "backuppc-hq"
   add_labels_metrics:
