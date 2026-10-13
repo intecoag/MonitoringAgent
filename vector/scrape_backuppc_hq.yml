@@ -25,38 +25,37 @@ transforms:
     inputs: [docker, vector_logs]
     source: |
       .message = parse_json(.message) ?? .message
-      .level = get(., ["level"]) ?? ""
-
-      .level = get(., ["level"])
+      
+      .level = get(., ["level"]) ?? null
       if is_null(.level) || .level == "" {
-        .level = get(., ["severity_text"])
+        .level = get(., ["severity_text"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["severity"])
+        .level = get(., ["severity"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["log_level"])
+        .level = get(., ["log_level"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["message", "level"])
+        .level = get(., ["message", "level"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["message", "severity_text"])
+        .level = get(., ["message", "severity_text"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["message", "severity"])
+        .level = get(., ["message", "severity"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["message", "log_level"])
+        .level = get(., ["message", "log_level"]) ?? null
       }
       if is_null(.level) || .level == "" {
-        .level = get(., ["message", "log", "level"])
+        .level = get(., ["message", "log", "level"]) ?? null
       }
       if is_null(.level) || .level == "" {
         .level = "unknown"
       }
-
       .level = downcase(to_string!(.level))
+
       .instance = "backuppc-hq"
   add_labels_metrics:
     type: remap
