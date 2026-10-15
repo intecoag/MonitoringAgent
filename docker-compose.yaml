@@ -7,6 +7,7 @@ services:
       - monitoring
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless_stopped
     # vector is logs collector. It collects logs according to vector.yml
   # and forwards them to VictoriaLogs
   vector:
@@ -28,6 +29,7 @@ services:
         target: /var/lib/docker
       - ./vector/${VECTOR_CONFIG_FILE}:/etc/vector/vector.yaml:ro
     user: root
+    restart: unless_stopped
 
 networks:
   monitoring:
